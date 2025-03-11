@@ -1,47 +1,61 @@
-import * as Speech from "expo-speech";
+import {
+  Dimensions,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-import { FlatList, Image, Text, TouchableOpacity } from "react-native";
+import React from "react";
 
-const words = [
-  { id: "1", text: "Hello", image: require("@/assets/images/hello.png") },
-  { id: "2", text: "Yes", image: require("@/assets/images/yes.png") },
-  { id: "3", text: "No", image: require("@/assets/images/no.png") },
-  {
-    id: "4",
-    text: "Thank you",
-    image: require("@/assets/images/thank_you.png"),
-  },
-];
+// Configurable grid size (rows x columns)
+const NUM_COLUMNS = 6;
+const NUM_ROWS = 4;
+const BUTTON_SIZE = Dimensions.get("window").width / NUM_COLUMNS - 8; // Auto-adjust button size
+
+// Sample placeholder data
+const words = Array.from({ length: NUM_COLUMNS * NUM_ROWS }, (_, i) => ({
+  id: `${i + 1}`,
+  text: `Word ${i + 1}`,
+}));
 
 export default function CommunicationGrid() {
-  const speak = (word: string) => {
-    Speech.speak(word, { rate: 0.9, pitch: 1.0 });
-  };
-
   return (
-    <FlatList
-      data={words}
-      numColumns={2}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => (
-        <TouchableOpacity
-          onPress={() => speak(item.text)}
-          style={{
-            flex: 1,
-            margin: 10,
-            padding: 20,
-            backgroundColor: "lightblue",
-            borderRadius: 10,
-            alignItems: "center",
-          }}
-        >
-          <Image
-            source={item.image}
-            style={{ width: 50, height: 50, marginBottom: 10 }}
-          />
-          <Text style={{ fontSize: 20 }}>{item.text}</Text>
-        </TouchableOpacity>
-      )}
-    />
+    <View style={styles.container}>
+      <FlatList
+        data={words}
+        numColumns={NUM_COLUMNS}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.text}>{item.text}</Text>
+          </TouchableOpacity>
+        )}
+      />
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+    justifyContent: "center",
+  },
+  button: {
+    width: BUTTON_SIZE,
+    height: BUTTON_SIZE,
+    margin: 2,
+    backgroundColor: "#4C9AFF", // Customize with your preferred color
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10, // Rounded buttons for a modern look
+    elevation: 3, // Adds depth
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white",
+  },
+});
